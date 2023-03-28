@@ -22,12 +22,4 @@ do
     echo "Processing $f file..";
 done
 
-
-#Copy all JS files
-for f in *.js; 
-do
-    cat $f > "$DEST/$f";
-    echo "Processing $f file..";
-done
-
 echo "Process complete." ;
