@@ -31,38 +31,48 @@
             if (empty($_POST["firstname"])) {
                 $firstnameErr = "First Name is required";
             } else {
-                $firstname = test_input($_POST["firstname"]);
                 // check if name only contains letters and whitespace
-                if (!preg_match("/^[a-zA-Z-' ]*$/", $firstname)) {
+                if (!preg_match("/^[a-zA-Z-' ]*$/", test_input($_POST["firstname"]))) {
                     $firstnameErr = "Only letters and white space allowed";
+                } else {
+                    $firstname = test_input($_POST["firstname"]);
+                    echo $firstname;
                 }
             }
 
             if (empty($_POST["lastname"])) {
                 $lastnameErr = "Last Name is required";
             } else {
-                $lastname = test_input($_POST["lastname"]);
                 // check if name only contains letters and whitespace
-                if (!preg_match("/^[a-zA-Z-' ]*$/", $lastname)) {
+                if (!preg_match("/^[a-zA-Z-' ]*$/", test_input($_POST["lastname"]))) {
                     $lastnameErr = "Only letters and white space allowed";
+                } else {
+                    $lastname = test_input($_POST["lastname"]);
                 }
             }
 
             if (empty($_POST["email"])) {
                 $emailErr = "Email is required";
             } else {
-                $email = test_input($_POST["email"]);
 
                 // check if e-mail address is well-formed
                 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                     $emailErr = "Invalid email format";
+                } else {
+                    $email = test_input($_POST["email"]);
                 }
             }
 
             if (empty($_POST["phoneno"])) {
                 $phonenoErr = "Phone Number is required";
             } else {
-                $phoneno = test_input($_POST["phoneno"]);
+                // check if phone number is valid
+                if (!filter_var(test_input($_POST["phoneno"]), FILTER_VALIDATE_EMAIL)) {
+                    $phonenoErr = "Invalid phone number";
+                } else {
+                    $phoneno = test_input($_POST["phoneno"]);
+                }
+                
             }
 
             if (empty($_POST["departing"])) {
