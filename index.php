@@ -1,11 +1,6 @@
 <html>
 
 <head>
-    <style>
-        .error {
-            color: #FF0000;
-        }
-    </style>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,7 +11,8 @@
 
 <body>
 
-    <div class="message">
+    <div>
+
         <?php
         // import phpMailer
         use PHPMailer\PHPMailer\PHPMailer;
@@ -29,7 +25,7 @@
         $firstnameErr = $lastnameErr = $emailErr = $phonenoErr
             = $departingErr = $returningErr = $residenceErr = $destinationErr = "";
         $firstname = $lastname = $email = $phoneno =
-            $departing = $returning = $residence = $destination = $message = "";
+            $departing = $returning = $residence = $destination = $message = $submitSuccess = "";
 
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (empty($_POST["firstname"])) {
@@ -108,7 +104,7 @@
                 // SET EMAIL
                 $senderEmail = 'bentoy1011@outlook.com';
                 $emailPassword = 'testbentoy11';
-                
+
                 // send confirmation mail to customer
                 $mailCus = new PHPMailer(true);
                 try {
@@ -130,15 +126,16 @@
                     $mailCus->isHTML(true);                                  //Set email format to HTML
                     $mailCus->Subject = 'Contact Form Submitted';
                     $mailCus->Body    = '<h3>Your enquiry has been recorded</h3> <br>
-                                            Dear ' .$firstname . '<br> Your Enquiry has been successfully submitted.
-                                            One of our agents will get back to you shortly'
-                                    ;
+                                            Dear ' . $firstname . '<br> Your Enquiry has been successfully submitted.
+                                            One of our agents will get back to you shortly';
                     $mailCus->AltBody = 'Your enquiry has been recorded
-                                        Dear ' .$firstname . ' Your Enquiry has been successfully submitted.
+                                        Dear ' . $firstname . ' Your Enquiry has been successfully submitted.
                                         One of our agents will get back to you shortly';
 
                     $mailCus->send();
-                    echo 'Submission successful!';
+                    echo '  <div class="msg-success">
+                                <p class ="msg-text"> Submitted Successfully </p>
+                            </div>';
                 } catch (Exception $e) {
                     echo "Message could not be sent. Mailer Error: {$mailCus->ErrorInfo}";
                 }
@@ -215,12 +212,13 @@
                         'Message: ' . $message;
 
                     $mail->send();
-                    echo 'Message has been sent';
                 } catch (Exception $e) {
                     echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
                 }
             } else {
-                echo "<p>failed to submit</p>";
+                echo ' <div class="msg-failure">
+                            <p class="msg-text"> Failed to submit </p>
+                        </div>';
             }
         }
 
@@ -232,6 +230,7 @@
             return $data;
         }
         ?>
+
     </div>
 
     <div class="form-container">
@@ -335,13 +334,13 @@
                 <tr>
                     <td>
                         <div class="input-container">
-                            <input type="text" class="input-field" placeholder="DD/MM/YY" onfocus="(this.type='date')" onblur="(this.type='text')" name="departing">
+                            <input type="text" class="input-field" placeholder="DD/MM/YY" min="<?php echo date("Y-m-d"); ?>" onfocus="(this.type='date')" onblur="(this.type='text')" name="departing">
                             <i class="fa fa-calendar icon"></i>
                         </div>
                     </td>
                     <td>
                         <div class="input-container">
-                            <input class="input-field" placeholder="DD/MM/YY" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" name="returning">
+                            <input class="input-field" placeholder="DD/MM/YY" type="text" min="<?php echo date("Y-m-d"); ?>" onfocus="(this.type='date')" onblur="(this.type='text')" name="returning">
                             <i class="fa fa-calendar icon"></i>
                             </input>
                         </div>
