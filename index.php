@@ -56,7 +56,7 @@
             } else {
 
                 // check if e-mail address is well-formed
-                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                if (!filter_var(test_input($_POST["email"]), FILTER_VALIDATE_EMAIL)) {
                     $emailErr = "Invalid email format";
                 } else {
                     $email = test_input($_POST["email"]);
@@ -67,12 +67,11 @@
                 $phonenoErr = "Phone Number is required";
             } else {
                 // check if phone number is valid
-                if (!filter_var(test_input($_POST["phoneno"]), FILTER_VALIDATE_EMAIL)) {
+                if (!filter_var(test_input($_POST["phoneno"]), FILTER_SANITIZE_NUMBER_INT)) {
                     $phonenoErr = "Invalid phone number";
                 } else {
-                    $phoneno = test_input($_POST["phoneno"]);
+                $phoneno = test_input($_POST["phoneno"]);
                 }
-                
             }
 
             if (empty($_POST["departing"])) {
@@ -111,6 +110,29 @@
                 && (!empty($departing)) && (!empty($returning))
                 && (!empty($residence)) && (!empty($destination)) && (isset($_POST['checked']))
             ) {
+
+                $servername = "localhost";
+                $database = "test_db";
+                $username = "test_user";
+                $password = "testpass1234";
+                // Create a connection
+                $conn = mysqli_connect($servername, $username, $password, $database);
+                // Check the connection
+                if (!$conn) {
+                    die("Connection failed: " . mysqli_connect_error());
+                }
+                echo "Connected successfully";
+                $sql = "INSERT INTO `visa_contact`(`First Name`, `Last Name`, `Email`, `Phone Number`,
+                `Departure Date`, `Return Date`, `Residence Country`, `Destination Country`, `Message`)
+                    VALUES ('[$firstname]', '[$lastname]', '[$email]', '[$phoneno]', '[$departing]', '[$returning]',
+                        '[$residence]', '[$destination]', '[$message]')";
+                if (mysqli_query($conn, $sql)) {
+                    echo "New record created successfully";
+                } else {
+                    echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+                }
+                mysqli_close($conn);
+
                 // SET EMAIL
                 $senderEmail = 'bentoy1011@outlook.com';
                 $emailPassword = 'testbentoy11';
