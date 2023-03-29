@@ -70,7 +70,7 @@
                 if (!filter_var(test_input($_POST["phoneno"]), FILTER_SANITIZE_NUMBER_INT)) {
                     $phonenoErr = "Invalid phone number";
                 } else {
-                $phoneno = test_input($_POST["phoneno"]);
+                    $phoneno = test_input($_POST["phoneno"]);
                 }
             }
 
@@ -124,8 +124,8 @@
                 echo "Connected successfully";
                 $sql = "INSERT INTO `visa_contact`(`First Name`, `Last Name`, `Email`, `Phone Number`,
                 `Departure Date`, `Return Date`, `Residence Country`, `Destination Country`, `Message`)
-                    VALUES ('[$firstname]', '[$lastname]', '[$email]', '[$phoneno]', '[$departing]', '[$returning]',
-                        '[$residence]', '[$destination]', '[$message]')";
+                    VALUES ('$firstname', '$lastname', '$email', '$phoneno', '$departing', '$returning',
+                        '$residence', '$destination', '$message')";
                 if (mysqli_query($conn, $sql)) {
                     echo "New record created successfully";
                 } else {
@@ -136,42 +136,6 @@
                 // SET EMAIL
                 $senderEmail = 'bentoy1011@outlook.com';
                 $emailPassword = 'testbentoy11';
-
-                // send confirmation mail to customer
-                $mailCus = new PHPMailer(true);
-                try {
-                    //Server settings
-                    // $mailCus->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
-                    $mailCus->isSMTP();                                            //Send using SMTP
-                    $mailCus->Host       = 'smtp.office365.com';                  //Set the SMTP server to send through
-                    $mailCus->SMTPAuth   = true;                                   //Enable SMTP authentication
-                    $mailCus->Username   = $senderEmail;                     //SMTP username
-                    $mailCus->Password   = $emailPassword;                               //SMTP password
-                    $mailCus->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;            //Enable implicit TLS encryption
-                    $mailCus->Port       = 587;                                    //TCP port to connect to
-
-                    //Recipients
-                    $mailCus->setFrom($senderEmail, 'WiseFares');
-                    $mailCus->addAddress($email, $firstname);     //Add a recipient
-
-                    //Content
-                    $mailCus->isHTML(true);                                  //Set email format to HTML
-                    $mailCus->Subject = 'Contact Form Submitted';
-                    $mailCus->Body    = '<h3>Your enquiry has been recorded</h3> <br>
-                                            Dear ' . $firstname . '<br> Your Enquiry has been successfully submitted.
-                                            One of our agents will get back to you shortly';
-                    $mailCus->AltBody = 'Your enquiry has been recorded
-                                        Dear ' . $firstname . ' Your Enquiry has been successfully submitted.
-                                        One of our agents will get back to you shortly';
-
-                    $mailCus->send();
-                    echo '  <div class="msg-success">
-                                <p class ="msg-text"> Submitted Successfully </p>
-                            </div>';
-                } catch (Exception $e) {
-                    echo "Message could not be sent. Mailer Error: {$mailCus->ErrorInfo}";
-                }
-
 
                 // send email to admin
                 $mail = new PHPMailer(true);
@@ -186,9 +150,11 @@
                     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;            //Enable implicit TLS encryption
                     $mail->Port       = 587;                                    //TCP port to connect to
 
+                    // set admin email
+                    $adminMail = 'hhoollah11@gmail.com';
                     //Recipients
                     $mail->setFrom($senderEmail, 'WiseFares');
-                    $mail->addAddress('hhoollah11@gmail.com', 'Admin');     //Add a recipient
+                    $mail->addAddress($adminMail, 'Admin');     //Add a recipient
                     // $mail->addAddress($email);               //Name is optional
                     // $mail->addReplyTo('info@example.com', 'Information');
                     // $mail->addCC('cc@example.com');
@@ -253,6 +219,42 @@
                         </div>';
             }
         }
+
+        // send confirmation mail to customer
+        $mailCus = new PHPMailer(true);
+        try {
+            //Server settings
+            // $mailCus->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
+            $mailCus->isSMTP();                                            //Send using SMTP
+            $mailCus->Host       = 'smtp.office365.com';                  //Set the SMTP server to send through
+            $mailCus->SMTPAuth   = true;                                   //Enable SMTP authentication
+            $mailCus->Username   = $senderEmail;                     //SMTP username
+            $mailCus->Password   = $emailPassword;                               //SMTP password
+            $mailCus->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;            //Enable implicit TLS encryption
+            $mailCus->Port       = 587;                                    //TCP port to connect to
+
+            //Recipients
+            $mailCus->setFrom($senderEmail, 'WiseFares');
+            $mailCus->addAddress($email, $firstname);     //Add a recipient
+
+            //Content
+            $mailCus->isHTML(true);                                  //Set email format to HTML
+            $mailCus->Subject = 'Contact Form Submitted';
+            $mailCus->Body    = '<h3>Your enquiry has been recorded</h3> <br>
+                                            Dear ' . $firstname . '<br> Your Enquiry has been successfully submitted.
+                                            One of our agents will get back to you shortly';
+            $mailCus->AltBody = 'Your enquiry has been recorded
+                                        Dear ' . $firstname . ' Your Enquiry has been successfully submitted.
+                                        One of our agents will get back to you shortly';
+
+            $mailCus->send();
+            echo '  <div class="msg-success">
+                                <p class ="msg-text"> Submitted Successfully </p>
+                            </div>';
+        } catch (Exception $e) {
+            echo "Message could not be sent. Mailer Error: {$mailCus->ErrorInfo}";
+        }
+
 
         function test_input($data)
         {
